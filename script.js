@@ -368,3 +368,44 @@ window.addEventListener('load', () => {
     setTimeout(() => initBtn.classList.remove('tapped'), 200);
   }, { passive: true });
 })();
+
+/* ===================================================
+   LANDING PAGE LOGIC (NEW)
+   =================================================== */
+(function initLanding() {
+  const landingScreen = document.getElementById('landingScreen');
+  const getStartedBtn = document.getElementById('getStartedBtn');
+  const bootScreen = document.getElementById('bootScreen');
+  const statNums = document.querySelectorAll('.stat-num');
+
+  if (!landingScreen || !getStartedBtn) return;
+
+  // animated stat counters
+  statNums.forEach(el => {
+    const target = parseInt(el.getAttribute('data-target'));
+    let current = 0;
+    const step = Math.max(1, Math.ceil(target / 40));
+    const interval = setInterval(() => {
+      current += step;
+      if (current >= target) { current = target; clearInterval(interval); }
+      el.textContent = current;
+    }, 40);
+  });
+
+  // hide boot screen initially, show only after "Get Started"
+  if (bootScreen) bootScreen.style.display = 'none';
+
+  getStartedBtn.addEventListener('click', () => {
+    landingScreen.classList.add('hide');
+    setTimeout(() => {
+      landingScreen.style.display = 'none';
+      if (bootScreen) {
+        bootScreen.style.display = 'flex';
+        // restart boot animations fresh
+        bootScreen.style.animation = 'none';
+        void bootScreen.offsetWidth; // reflow trick
+        bootScreen.style.animation = '';
+      }
+    }, 650);
+  });
+})();
